@@ -9,7 +9,7 @@ import Footer from '../footer';
 const getId = () => Math.floor(Math.random() * 10 ** 10);
 
 export default class App extends Component {
-  static createForTodoList(label) {
+  static createForTodoList(label, time) {
     const currentTime = new Date();
     return {
       done: false,
@@ -18,6 +18,7 @@ export default class App extends Component {
       label,
       getTime: 'created 1 second ago',
       currentTime,
+      time,
     };
   }
 
@@ -50,11 +51,7 @@ export default class App extends Component {
 
   componentDidMount() {
     this.setState({
-      todoData: [
-        App.createForTodoList('Completed task'),
-        App.createForTodoList('Editing task'),
-        App.createForTodoList('Active task'),
-      ],
+      todoData: [App.createForTodoList('fw', 480), App.createForTodoList('fw', 240), App.createForTodoList('fw', 120)],
     });
 
     const tick = () => {
@@ -100,8 +97,8 @@ export default class App extends Component {
     }));
   };
 
-  addNewTask = (label) => {
-    const newItem = App.createForTodoList(label);
+  addNewTask = (label, time) => {
+    const newItem = App.createForTodoList(label, time);
     this.setState(({ todoData }) => ({ todoData: [newItem, ...todoData] }));
   };
 

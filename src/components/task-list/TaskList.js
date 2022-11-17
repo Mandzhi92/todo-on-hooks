@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Task from '../task';
 
 function TaskList({ todoData, onDeleted, onToggleDone, onToggleEditing, onFormatLabel }) {
-  const listItems = todoData.map(({ id, done, editing, label, getTime }) => {
+  const listItems = todoData.map(({ id, done, editing, label, getTime, time }) => {
     let className = '';
     if (done) {
       className = 'completed';
@@ -19,6 +19,7 @@ function TaskList({ todoData, onDeleted, onToggleDone, onToggleEditing, onFormat
           label={label}
           getTime={getTime}
           editing={editing}
+          time={time}
           onDeleted={() => onDeleted(id)}
           onToggleDone={() => onToggleDone(id)}
           onToggleEditing={() => onToggleEditing(id)}

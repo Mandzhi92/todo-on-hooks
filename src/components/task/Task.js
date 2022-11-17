@@ -1,16 +1,19 @@
 import './Task.css';
 import PropTypes, { string } from 'prop-types';
 
+import Timer from '../timer/timer';
 import EditingTask from '../editing-task';
 
 function Task(props) {
-  const { label, onDeleted, onToggleDone, onToggleEditing, getTime, editing, onFormatLabel, done } = props;
+  const { label, onDeleted, onToggleDone, onToggleEditing, getTime, editing, onFormatLabel, done, time } = props;
 
   const task = (
     <div className="view">
       <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
       <label>
         <span className="description">{label}</span>
+        <Timer time={time} />
+
         <span className="created">{getTime}</span>
       </label>
       <button aria-label="edit" type="button" className="icon icon-edit" onClick={onToggleEditing} />

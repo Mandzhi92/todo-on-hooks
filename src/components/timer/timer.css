@@ -1,0 +1,33 @@
+.todo-list li .icon-pause,
+.todo-list li .icon-play {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+ 
+}
+
+.todo-list li .icon-play {
+	font-size: 15px;
+    
+}
+
+.icon-pause:after {
+	content: '⏸';
+    display: block;
+    cursor: pointer;
+}
+
+.icon-play:after {
+	content: '▶';
+    display: block;
+    cursor: pointer;
+}
+
+.description-timer{
+    display: block;
+	font-size: 13px;
+	color: gray;
+    display: flex;
+    width: 80px;
+    justify-content: space-between;
+}
