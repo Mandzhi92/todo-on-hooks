@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 
 import TasksFilter from '../tasks-filter';
 
-function Footer(props) {
-  const { onFilterChange, filter, onClearCompleted, isCompletedTasksCount } = props;
-
+function Footer({ onFilterChange, filterBtn, onClearCompleted, isCompletedTasksCount }) {
   return (
     <footer className="footer">
       <span className="todo-count">{`${isCompletedTasksCount} items left`}</span>
-      <TasksFilter onFilterChange={onFilterChange} filter={filter} />
+      <TasksFilter onFilterChange={onFilterChange} filterBtn={filterBtn} />
       <button type="button" className="clear-completed" onClick={onClearCompleted}>
         Clear completed
       </button>
@@ -19,13 +17,13 @@ function Footer(props) {
 
 Footer.defaultProps = {
   isCompletedTasksCount: 'N',
-  onFilterChange: 'all',
-  filter: 'all',
+  onFilterChange: 'All',
+  filterBtn: 'All',
 };
 Footer.propTypes = {
   isCompletedTasksCount: PropTypes.string,
   onFilterChange: PropTypes.func,
-  filter: PropTypes.string,
+  filterBtn: PropTypes.string,
 };
 
 export default Footer;

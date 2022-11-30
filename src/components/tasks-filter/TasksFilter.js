@@ -1,7 +1,7 @@
 import './TasksFilter.css';
 import PropTypes from 'prop-types';
 
-function TasksFilter({ onFilterChange, filter }) {
+function TasksFilter({ onFilterChange, filterBtn }) {
   const buttons = [
     { name: 'all', label: 'All' },
     { name: 'active', label: 'Active' },
@@ -10,7 +10,7 @@ function TasksFilter({ onFilterChange, filter }) {
 
   const btnItems = buttons.map(({ name, label }) => {
     let className = '';
-    if (filter === name) {
+    if (filterBtn === name) {
       className = 'selected';
     }
     return (
@@ -26,11 +26,11 @@ function TasksFilter({ onFilterChange, filter }) {
 }
 
 TasksFilter.defaultProps = {
-  filter: 'all',
+  filterBtn: 'all',
 };
 TasksFilter.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
-  filter: PropTypes.string,
+  filterBtn: PropTypes.string,
 };
 
 export default TasksFilter;

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './NewTaskForm.css';
+import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 function NewTaskFrom({ addNewTask }) {
   const [taskLabel, setTaskLabel] = useState('');
@@ -20,7 +21,13 @@ function NewTaskFrom({ addNewTask }) {
     const isTime = time.min || time.sec;
 
     if (event.key === 'Enter' && taskLabel && isTime) {
-      addNewTask(taskLabel, timeSec);
+      addNewTask({
+        done: false,
+        editing: false,
+        label: taskLabel,
+        getTime: formatDistanceToNow(new Date(), { includeSeconds: true }),
+        time: timeSec,
+      });
 
       setTaskLabel('');
       setTime({ sec: '', min: '' });

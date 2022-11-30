@@ -15,6 +15,7 @@ function TaskList({ todoData, onDeleted, onToggleDone, onToggleEditing, onFormat
     return (
       <li key={id} className={className}>
         <Task
+          id={id}
           done={done}
           label={label}
           getTime={getTime}
@@ -23,7 +24,7 @@ function TaskList({ todoData, onDeleted, onToggleDone, onToggleEditing, onFormat
           onDeleted={() => onDeleted(id)}
           onToggleDone={() => onToggleDone(id)}
           onToggleEditing={() => onToggleEditing(id)}
-          onFormatLabel={(label) => onFormatLabel(id, label)}
+          onFormatLabel={onFormatLabel}
         />
       </li>
     );

@@ -1,139 +1,73 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.css';
-import { formatDistanceToNow } from 'date-fns';
 
 import TaskList from '../task-list';
 import NewTaskForm from '../new-task-form';
 import Footer from '../footer';
+import defaultValueTasks, { getId } from '../defaultValueTasks/defaultValueTasks';
 
-const getId = () => Math.floor(Math.random() * 10 ** 10);
+export default function App() {
+  const [tasks, setTasks] = useState(defaultValueTasks);
+  const [filter, setFilter] = useState('all');
 
-export default class App extends Component {
-  static createForTodoList(label, time) {
-    const currentTime = new Date();
-    return {
-      done: false,
-      editing: false,
-      id: getId(),
-      label,
-      getTime: 'created 1 second ago',
-      currentTime,
-      time,
-    };
-  }
-
-  static changeTodoData = (todoData, id, key) => todoData.map((el) => (el.id === id ? { ...el, [key]: !el[key] } : el));
-
-  static filter(items, filter) {
-    const match = {
-      all() {
-        return items;
-      },
-      active() {
-        return items.filter((item) => !item.done);
-      },
-      completed() {
-        return items.filter((item) => item.done);
-      },
-    };
-    return match[filter] ? match[filter]() : items;
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      todoData: [],
-      filter: 'all',
-    };
-    this.updateInterval = 2000;
-  }
-
-  componentDidMount() {
-    this.setState({
-      todoData: [App.createForTodoList('fw', 480), App.createForTodoList('fw', 240), App.createForTodoList('fw', 120)],
-    });
-
-    const tick = () => {
-      this.tickTimer();
-      this.timerId = setTimeout(tick, this.updateInterval);
-    };
-    this.timerId = setTimeout(tick, this.updateInterval);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timerId);
-  }
-
-  tickTimer = () => {
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((task) => {
-        const getTime = formatDistanceToNow(new Date(task.currentTime), { includeSeconds: true });
-
-        return { ...task, getTime };
-      }),
-    }));
+  const addNewTask = (task) => {
+    setTasks((state) => [{ ...task, id: getId() }, ...state]);
   };
 
-  deleteTask = (id) => {
-    this.setState(({ todoData }) => ({ todoData: todoData.filter((item) => item.id !== id) }));
+  const changeTodoData = (tasks, id, key) => tasks.map((el) => (el.id === id ? { ...el, [key]: !el[key] } : el));
+
+  const onToggleEditing = (id) => {
+    setTasks(() => changeTodoData(tasks, id, 'editing'));
   };
 
-  onToggleEditing = (id) => {
-    this.setState(({ todoData }) => ({
-      todoData: App.changeTodoData(todoData, id, 'editing'),
-    }));
+  const onToggleDone = (id) => {
+    setTasks(() => changeTodoData(tasks, id, 'done'));
   };
 
-  onToggleDone = (id) => {
-    this.setState(({ todoData }) => ({
-      todoData: App.changeTodoData(todoData, id, 'done'),
-    }));
+  const onFormatLabel = (label, id) => {
+    setTasks(tasks.map((el) => (el.id === id ? { ...el, label, editing: !el.editing } : el)));
   };
 
-  onFormatLabel = (id, label) => {
-    this.setState(({ todoData }) => ({
-      todoData: todoData.map((el) => (el.id === id ? { ...el, label, editing: !el.editing } : el)),
-    }));
+  const deleteTask = (id) => {
+    setTasks((state) => state.filter((item) => item.id !== id));
   };
 
-  addNewTask = (label, time) => {
-    const newItem = App.createForTodoList(label, time);
-    this.setState(({ todoData }) => ({ todoData: [newItem, ...todoData] }));
+  const onFilterChange = (filterName) => {
+    setFilter(filterName);
   };
 
-  onFilterChange = (filter) => {
-    this.setState(() => ({ filter }));
+  const onClearCompleted = () => {
+    setTasks((state) => state.filter((item) => item.done !== true));
   };
 
-  onClearCompleted = () => {
-    this.setState(({ todoData }) => ({ todoData: todoData.filter((item) => !item.done) }));
+  const currentTasks = () => {
+    if (filter === 'all') return tasks;
+    if (filter === 'active') {
+      return tasks.filter((item) => item.done !== true);
+    }
+    return tasks.filter((item) => item.done === true);
   };
 
-  render() {
-    const { todoData, filter } = this.state;
-    const visibleItems = App.filter(todoData, filter);
-    const isCompletedTasksCount = `${todoData.filter((item) => !item.done).length}`;
+  const isCompletedTasksCount = tasks.filter((item) => !item.done).length.toString();
 
-    return (
-      <section className="todoapp">
-        <NewTaskForm addNewTask={this.addNewTask} />
-        <section className="main">
-          <TaskList
-            todoData={visibleItems}
-            onToggleDone={this.onToggleDone}
-            onToggleEditing={this.onToggleEditing}
-            onDeleted={this.deleteTask}
-            onFormatLabel={this.onFormatLabel}
-          />
-          <Footer
-            onFilterChange={this.onFilterChange}
-            filter={filter}
-            onClearCompleted={this.onClearCompleted}
-            isCompletedTasksCount={isCompletedTasksCount}
-          />
-        </section>
+  return (
+    <section className="todoapp">
+      <NewTaskForm addNewTask={addNewTask} />
+      <section className="main">
+        <TaskList
+          todoData={currentTasks()}
+          onToggleDone={onToggleDone}
+          onToggleEditing={onToggleEditing}
+          onDeleted={deleteTask}
+          onFormatLabel={onFormatLabel}
+        />
+        <Footer
+          onFilterChange={onFilterChange}
+          filterBtn={filter}
+          onClearCompleted={onClearCompleted}
+          isCompletedTasksCount={isCompletedTasksCount}
+        />
       </section>
-    );
-  }
+    </section>
+  );
 }
